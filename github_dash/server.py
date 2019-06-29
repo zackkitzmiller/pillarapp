@@ -23,7 +23,7 @@ def search():
     if org is None:
         raise OrginizationRequiredException
 
-    sort_choice = request.args.get('sort', github_client.DEFAULT_SORT)
+    sort_choice = request.args.get('sort', None)
     try:
         repos = github_client.get_sorted_repos(org, sort=sort_choice)
     except OrginizationNotFoundException:

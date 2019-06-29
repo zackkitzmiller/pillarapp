@@ -33,12 +33,14 @@ if GITHUB_API_TOKEN is None:
 _client = Github(GITHUB_API_TOKEN)
 
 
-# Todo Cache?
-def get_sorted_repos(orginization, sort=STARS_SORT):
+def get_sorted_repos(orginization, sort=DEFAULT_SORT):
     try:
         org = _client.get_organization(orginization)
     except Exception:
         raise OrginizationNotFoundException
+
+    if sort is None:
+        sort = DEFAULT_SORT
 
     if sort not in VALID_SORTS:
         raise InvalidSortException
