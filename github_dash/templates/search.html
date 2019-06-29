@@ -1,26 +1,21 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>title</title>
-  </head>
-  <body>
-
-    <h1>GitHub Dashboard</h1>
-
-    <form action="/search" method="GET">
-
-        <input type="text" name="repo"/>
-        <input type="submit">
-
-    </form>
-
-    <br>
-
+{% extends "base.html" %}    <br>
+{% block search_results %}
+{% if repos %}
     Results:
-    <ol>
-
-    </ol>
-
-  </body>
-</html>
+    <table>
+        <tr>
+            <th>Repo</th>
+            <th><a href="/search?orginization={{ orginization }}&sort=stars">Stars</a></th>
+            <th><a href="/search?orginization={{ orginization }}&sort=forks">Forks</a></th>
+            <th><a href="/search?orginization={{ orginization }}&sort=contributors">Contributors</a></th>
+        </tr>
+        {% for repo in repos %}
+            <tr>
+                <td>{{ repo.name }}</td>
+                <td>{{ repo.stars }}</td>
+                <td>{{ repo.forks }}</td>
+                <td>{{ repo.contributors }}</td>
+            </tr>
+        {% endfor %}
+{% endif %}
+{% endblock %}

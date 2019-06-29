@@ -4,3 +4,11 @@ class TokenNotFoundException(Exception):
 
 class OrginizationRequiredException(Exception):
     pass
+
+
+class OrginizationNotFoundException(Exception):
+    pass
+
+
+class InvalidSortException(Exception):
+    pass

@@ -1,16 +1,15 @@
 from flask import Flask, render_template, request
 
 from exceptions import (
-    OrginizationNotFoundException,
     OrginizationRequiredException
 )
-from github_client import client, STARS_SORT
+from source_control_clients import github_client
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('base.html')
 
 
 @app.route('/search')
@@ -19,14 +18,7 @@ def search():
     if org is None:
         raise OrginizationRequiredException
 
-    try:
-        org = client.get_organization(org)
-    except: # TODO, Name this Exception
-        raise OrginizationNotFoundException
+    sort_choice = request.args.get('sort', github_client.DEFAULT_SORT)
+    repos = github_client.get_sorted_repos(org, sort=sort_choice)
 
-    print org
-    repos = org.get_repos()
-    for repo in repos:
-        print repo.stargazers_count
-
-    return render_template('search.html')
+    return render_template('search.html', repos=repos, orginization=org)

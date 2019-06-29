@@ -1,0 +1,84 @@
+import logging
+import os
+
+
+from ..exceptions import (
+    InvalidSortException,
+    OrginizationNotFoundException,
+    TokenNotFoundException
+)
+from ..cache import client
+
+from github import Github
+
+
+logger = logging.getLogger(__name__)
+logging.basicConfig()
+
+CACHE_TTL = 24 * 60 * 60
+GITHUB_API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
+DEFAULT_SORT = STARS_SORT = "stars"
+FORKS_SORT = "forks"
+CONTRIBUTORS_SORT = "contributors"
+VALID_SORTS = frozenset((DEFAULT_SORT, FORKS_SORT, CONTRIBUTORS_SORT))
+
+if GITHUB_API_TOKEN is None:
+    logger.error('GitHub API Token Not Found')
+    raise TokenNotFoundException
+
+_client = Github(GITHUB_API_TOKEN)
+
+
+# Todo Cache?
+def get_sorted_repos(orginization, sort=STARS_SORT):
+    try:
+        org = _client.get_organization(orginization)
+    except: # TODO, Name this Exception
+        raise OrginizationNotFoundException
+
+    if sort not in VALID_SORTS:
+        raise InvalidSortException
+
+    # Sorting doesn't work w/ this client, we're going to have to do it
+    # in memory, learned this too late in the game to choose a different client
+    # or write my own. RIP
+    _repos = []
+    repos = org.get_repos(type='sources')
+    for repo in repos:
+        _repos.append({
+            'name': repo.name,
+            'stars': repo.stargazers_count,
+            'forks': repo.forks_count,
+            'contributors': get_contributor_count(repo)
+        })
+
+    return sorted(_repos, key=lambda x: x[sort], reverse=True)
+
+
+# little helper here, because we get a generator back from repo.get_contributors
+def get_contributor_count(repo):
+
+    # this is really really slow.
+    cached_count = client.get(repo.name + ":contributor_count")
+    logger.error("looking in cache {0}".format(repo.name))
+    if cached_count:
+        logger.error('found in cache {0}'.format(repo.name))
+        return cached_count
+
+    logger.error('not cached {0}'.format(repo.name))
+    contributor_count = 0
+    try:
+        contributors = repo.get_stats_contributors()
+    except Exception: # todo name
+        return contributor_count
+
+    if contributors is not None:
+        for contributor in contributors:
+            contributor_count += 1
+            # Hack - short circuit at 15. This endpoint is incredibly slow.
+            # I don't have a good solution for this yet.
+            if contributor_count >= 15:
+                break
+
+    client.setex(repo.name + ":contributor_count", CACHE_TTL, int(contributor_count))
+    return contributor_count

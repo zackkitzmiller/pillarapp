@@ -11,9 +11,15 @@
     <form action="/search" method="GET">
 
         <input type="text" name="orginization"/>
+        sort:
+        <input type="radio" name="sort" value="stars"> stars
+        <input type="radio" name="sort" value="forks"> forks
+        <input type="radio" name="sort" value="contributors"> contributors
         <input type="submit">
 
     </form>
 
+    {% block search_results %}
+    {% endblock %}
   </body>
 </html>
