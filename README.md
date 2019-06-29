@@ -21,7 +21,7 @@ The server is built with Flask. To run the server:
 3. run `source .env && flask run`
 
 ## Limitations
-- [ ] Sorting in Memory. I went down the wrong route of using a Github API client that doesn't retun the results exactly like as I'd like
+- [ ] Sorting in Memory. I went down the wrong route of using a Github API client that doesn't retun the results exactly like as I'd like. The README says it supports sorting, but it actually just doesn't work. I would have written my own, but alas, too late.
 - [ ] Web requests to GitHub are syncronous
 - [ ] The contributors count is inaccurate because of the Github API client (It names N*M requests where N is number of repos and M is number of contributors to that repo)
 - [ ] Redis cache is used for speeding up testing/development. It's a premature optimization for sure
