@@ -17,5 +17,7 @@
                 <td>{{ repo.contributors }}</td>
             </tr>
         {% endfor %}
+{% else %}
+    <p>No repos found for {{ orginization }}</p>
 {% endif %}
 {% endblock %}
