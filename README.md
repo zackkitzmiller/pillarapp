@@ -6,7 +6,7 @@ It's recommended that you use a virtual env to run this application.
 
 `pip install -r requirements.txt`
 
-The server also requires redis. To install on a mac
+The server also will utilize redis if it's available.
 
 `brew install redis`
 
@@ -25,3 +25,4 @@ The server is built with Flask. To run the server:
 - [ ] Web requests to GitHub are syncronous
 - [ ] The contributors count is inaccurate because of the Github API client (It names N*M requests where N is number of repos and M is number of contributors to that repo)
 - [ ] Redis cache is used for speeding up testing/development. It's a premature optimization for sure
+- [ ] Error handling is subpar. Need to write a handler to turn the psudo-generic 500s into 4XX with relevant user information
