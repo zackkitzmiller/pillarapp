@@ -95,7 +95,8 @@ def get_contributor_count(repo):
                 break
 
     if use_cache:
-        cache_client.setex(_cache_key(repo.name), CACHE_TTL, int(contributor_count))
+        _key = _cache_key(repo.name)
+        cache_client.setex(_key, CACHE_TTL, int(contributor_count))
     return int(contributor_count)
 
 
