@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 
 from exceptions import (
-    OrginizationRequiredException,
-    OrginizationNotFoundException
+    OrginizationNotFoundException,
+    OrginizationRequiredException
 )
 
 from source_control_clients import github_client
