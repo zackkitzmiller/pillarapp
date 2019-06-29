@@ -11,6 +11,7 @@ from ..exceptions import (
 use_cache = False
 try:
     from ..cache import client as cache_client
+    from redis.exceptions import ConnectionError
     use_cache = True
 except ImportError:
     pass
@@ -72,11 +73,14 @@ def get_contributor_count(repo):
         # This block could be abstracted into it's own method to
         # reduce cyclomatic complexty a little bit, but I'm running short
         # on time
-        cached_count = cache_client.get(_cache_key(repo.name))
-        logger.info("looking in cache {0}".format(repo.name))
-        if cached_count:
-            logger.info('cache hit {0}'.format(repo.name))
-            return cached_count
+        try:
+            cached_count = cache_client.get(_cache_key(repo.name))
+            logger.info("looking in cache {0}".format(repo.name))
+            if cached_count:
+                logger.info('cache hit {0}'.format(repo.name))
+                return cached_count
+        except ConnectionError:
+            logger.warn('redis has gone away')
 
         logger.info('cache miss {0}'.format(repo.name))
 
@@ -95,8 +99,12 @@ def get_contributor_count(repo):
                 break
 
     if use_cache:
-        _key = _cache_key(repo.name)
-        cache_client.setex(_key, CACHE_TTL, contributor_count)
+        try:
+            _key = _cache_key(repo.name)
+            cache_client.setex(_key, CACHE_TTL, contributor_count)
+        except ConnectionError:
+            logger.warn('redis has gone away')
+
     return contributor_count
 
 
