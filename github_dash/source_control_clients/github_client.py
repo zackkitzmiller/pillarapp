@@ -1,6 +1,6 @@
 import logging
 import os
-
+import sys
 
 from ..exceptions import (
     InvalidSortException,
@@ -65,7 +65,7 @@ def get_sorted_repos(orginization, sort=DEFAULT_SORT):
 def get_contributor_count(repo):
 
     # probably a cleaner way to make redis optional, but in time crunch
-    if cache_client:
+    if 'cache_client' in sys.modules:
         # this is really really slow.
         cached_count = cache_client.get(_cache_key(repo.name))
         logger.info("looking in cache {0}".format(repo.name))
@@ -89,7 +89,7 @@ def get_contributor_count(repo):
             if contributor_count >= 15:
                 break
 
-    if cache_client:
+    if 'cache_client' in sys.modules:
         cache_client.setex(_cache_key(repo.name), CACHE_TTL, int(contributor_count))
     return int(contributor_count)
 

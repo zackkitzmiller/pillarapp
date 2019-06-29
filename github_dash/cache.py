@@ -1,5 +1,21 @@
+import logging
 import os
 
-import redis
+from exceptions import RedisEnvironmentNotConfigured
 
-client = redis.Redis(host=os.environ.get('REDIS_HOST'))
+logger = logging.getLogger(__name__)
+logging.basicConfig()
+
+
+try:
+    import redis
+
+    REDIS_HOST = os.environ.get('REDIS_HOST', None)
+    if REDIS_HOST is None:
+        raise RedisEnvironmentNotConfigured
+
+    client = redis.Redis(host=os.environ.get('REDIS_HOST'))
+except ImportError:
+    logger.warn("redis will not be used")
+    pass
+
