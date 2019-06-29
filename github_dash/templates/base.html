@@ -2,7 +2,9 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>title</title>
+    <title>GitHub Dash</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
   </head>
   <body>
 
@@ -10,11 +12,13 @@
 
     <form action="/search" method="GET">
 
-        <input type="text" name="orginization"/>
+        <label>Search an Originzation</label><br>
+
+        <input type="text" name="orginization" placeholder="github originzation"/><br>
         sort:
         <input type="radio" name="sort" value="stars"> stars
         <input type="radio" name="sort" value="forks"> forks
-        <input type="radio" name="sort" value="contributors"> contributors
+        <input type="radio" name="sort" value="contributors"> contributors<br>
         <input type="submit">
 
     </form>

@@ -2,7 +2,7 @@
 {% block search_results %}
 {% if repos %}
     Results:
-    <table>
+    <table class="table">
         <tr>
             <th>Repo</th>
             <th><a href="/search?orginization={{ orginization }}&sort=stars">Stars</a></th>
@@ -11,7 +11,7 @@
         </tr>
         {% for repo in repos %}
             <tr>
-                <td>{{ repo.name }}</td>
+                <td><a href="https://github.com/{{ orginization }}/{{ repo.name }}" target="_blank">{{ repo.name }}</a></td>
                 <td>{{ repo.stars }}</td>
                 <td>{{ repo.forks }}</td>
                 <td>{{ repo.contributors }}</td>
