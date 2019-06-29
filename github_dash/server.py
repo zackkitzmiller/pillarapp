@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
 
-from exceptions import OrginizationRequiredException
+from exceptions import (
+    OrginizationRequiredException,
+    OrginizationNotFoundException
+)
 
 from source_control_clients import github_client
 
@@ -21,6 +24,9 @@ def search():
         raise OrginizationRequiredException
 
     sort_choice = request.args.get('sort', github_client.DEFAULT_SORT)
-    repos = github_client.get_sorted_repos(org, sort=sort_choice)
+    try:
+        repos = github_client.get_sorted_repos(org, sort=sort_choice)
+    except OrginizationNotFoundException:
+        repos = None
 
     return render_template('search.html', repos=repos, orginization=org)
