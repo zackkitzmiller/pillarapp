@@ -17,5 +17,4 @@ try:
     client = redis.Redis(host=os.environ.get('REDIS_HOST'))
 except ImportError:
     logger.warn("redis will not be used")
-    pass
 
