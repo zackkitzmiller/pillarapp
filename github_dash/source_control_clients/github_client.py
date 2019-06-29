@@ -60,12 +60,12 @@ def get_contributor_count(repo):
 
     # this is really really slow.
     cached_count = client.get(_cache_key(repo.name))
-    logger.error("looking in cache {0}".format(repo.name))
+    logger.info("looking in cache {0}".format(repo.name))
     if cached_count:
-        logger.error('found in cache {0}'.format(repo.name))
+        logger.info('cache hit {0}'.format(repo.name))
         return int(cached_count)
 
-    logger.error('not cached {0}'.format(repo.name))
+    logger.info('cache miss {0}'.format(repo.name))
     contributor_count = 0
     try:
         contributors = repo.get_stats_contributors()
