@@ -19,7 +19,7 @@ The server is built with Flask. To run the server:
 1. copy .env.sample to .env and enter your GitHub Token, development environment, and host for Redis
 2. run `EXPORT FLASK_APP=github_dash/server.py`
 3. run `source .env && flask run`
-4. visit https://127.0.0.1:5000
+4. visit http://127.0.0.1:5000
 
 Note: The first load for a large orginization is incredibly slow because of the limitations I've noted below. There are many ways to resolve this, but when I realized what was going on, I was running short on time. After the first run the results will be cached and will be nearly instant. The TTL on the cache is 24 hours.
 
