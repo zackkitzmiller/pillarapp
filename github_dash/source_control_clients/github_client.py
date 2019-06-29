@@ -67,8 +67,11 @@ def get_sorted_repos(orginization, sort=DEFAULT_SORT):
 def get_contributor_count(repo):
 
     # probably a cleaner way to make redis optional, but in time crunch
+    # this is really really slow.
     if use_cache:
-        # this is really really slow.
+        # This block could be abstracted into it's own method to
+        # reduce cyclomatic complexty a little bit, but I'm running short
+        # on time
         cached_count = cache_client.get(_cache_key(repo.name))
         logger.info("looking in cache {0}".format(repo.name))
         if cached_count:
