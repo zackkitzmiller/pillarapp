@@ -26,7 +26,7 @@ GITHUB_API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
 DEFAULT_SORT = STARS_SORT = "stars"
 FORKS_SORT = "forks"
 CONTRIBUTORS_SORT = "contributors"
-VALID_SORTS = frozenset((DEFAULT_SORT, FORKS_SORT, CONTRIBUTORS_SORT))
+VALID_SORTS = frozenset((STARS_SORT, FORKS_SORT, CONTRIBUTORS_SORT))
 
 if GITHUB_API_TOKEN is None:
     logger.error('GitHub API Token Not Found')
