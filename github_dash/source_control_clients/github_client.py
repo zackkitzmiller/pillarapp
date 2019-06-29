@@ -57,7 +57,7 @@ def get_sorted_repos(orginization, sort=DEFAULT_SORT):
             'name': repo.name,
             'stars': repo.stargazers_count,
             'forks': repo.forks_count,
-            'contributors': get_contributor_count(repo)
+            'contributors': int(get_contributor_count(repo))
         })
 
     return sorted(_repos, key=lambda x: x[sort], reverse=True)
@@ -76,7 +76,7 @@ def get_contributor_count(repo):
         logger.info("looking in cache {0}".format(repo.name))
         if cached_count:
             logger.info('cache hit {0}'.format(repo.name))
-            return int(cached_count)
+            return cached_count
 
         logger.info('cache miss {0}'.format(repo.name))
 
@@ -96,8 +96,8 @@ def get_contributor_count(repo):
 
     if use_cache:
         _key = _cache_key(repo.name)
-        cache_client.setex(_key, CACHE_TTL, int(contributor_count))
-    return int(contributor_count)
+        cache_client.setex(_key, CACHE_TTL, contributor_count)
+    return contributor_count
 
 
 def _cache_key(repo_name):
