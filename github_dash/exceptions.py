@@ -12,3 +12,7 @@ class OrginizationNotFoundException(Exception):
 
 class InvalidSortException(Exception):
     pass
+
+
+class RedisEnvironmentNotConfigured(Exception):
+    pass

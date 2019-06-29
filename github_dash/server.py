@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request
 
-from exceptions import (
-    OrginizationRequiredException
-)
+from exceptions import OrginizationRequiredException
+
 from source_control_clients import github_client
 
+# Here we could add our telemetry, centralized exception handling, etc.
+# We don't need that these purposes, but I wanted to note them regardless
 app = Flask(__name__)
+
 
 @app.route('/')
 def home():
