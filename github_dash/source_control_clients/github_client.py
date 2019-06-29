@@ -59,11 +59,11 @@ def get_sorted_repos(orginization, sort=STARS_SORT):
 def get_contributor_count(repo):
 
     # this is really really slow.
-    cached_count = client.get(repo.name + ":contributor_count")
+    cached_count = client.get(_cache_key(repo.name))
     logger.error("looking in cache {0}".format(repo.name))
     if cached_count:
         logger.error('found in cache {0}'.format(repo.name))
-        return cached_count
+        return int(cached_count)
 
     logger.error('not cached {0}'.format(repo.name))
     contributor_count = 0
@@ -80,5 +80,9 @@ def get_contributor_count(repo):
             if contributor_count >= 15:
                 break
 
-    client.setex(repo.name + ":contributor_count", CACHE_TTL, int(contributor_count))
-    return contributor_count
+    client.setex(_cache_key(repo.name), CACHE_TTL, int(contributor_count))
+    return int(contributor_count)
+
+
+def _cache_key(repo_name):
+    return "{0}:contributor_count".format(repo_name)
