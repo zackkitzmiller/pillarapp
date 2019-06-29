@@ -7,7 +7,11 @@ from ..exceptions import (
     OrginizationNotFoundException,
     TokenNotFoundException
 )
-from ..cache import client
+
+try:
+    from ..cache import client as cache_client
+except ImportError:
+    pass
 
 from github import Github
 
@@ -33,7 +37,7 @@ _client = Github(GITHUB_API_TOKEN)
 def get_sorted_repos(orginization, sort=STARS_SORT):
     try:
         org = _client.get_organization(orginization)
-    except: # TODO, Name this Exception
+    except Exception:
         raise OrginizationNotFoundException
 
     if sort not in VALID_SORTS:
@@ -58,14 +62,17 @@ def get_sorted_repos(orginization, sort=STARS_SORT):
 # little helper here, because we get a generator back from repo.get_contributors
 def get_contributor_count(repo):
 
-    # this is really really slow.
-    cached_count = client.get(_cache_key(repo.name))
-    logger.info("looking in cache {0}".format(repo.name))
-    if cached_count:
-        logger.info('cache hit {0}'.format(repo.name))
-        return int(cached_count)
+    # probably a cleaner way to make redis optional, but in time crunch
+    if cache_client:
+        # this is really really slow.
+        cached_count = cache_client.get(_cache_key(repo.name))
+        logger.info("looking in cache {0}".format(repo.name))
+        if cached_count:
+            logger.info('cache hit {0}'.format(repo.name))
+            return int(cached_count)
 
-    logger.info('cache miss {0}'.format(repo.name))
+        logger.info('cache miss {0}'.format(repo.name))
+
     contributor_count = 0
     try:
         contributors = repo.get_stats_contributors()
@@ -80,7 +87,8 @@ def get_contributor_count(repo):
             if contributor_count >= 15:
                 break
 
-    client.setex(_cache_key(repo.name), CACHE_TTL, int(contributor_count))
+    if cache_client:
+        cache_client.setex(_cache_key(repo.name), CACHE_TTL, int(contributor_count))
     return int(contributor_count)
 
 
