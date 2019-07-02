@@ -1,12 +1,13 @@
 import logging
 import os
-import sys
 
-from ..exceptions import (
+from github_dash.source_control_clients.exceptions import (
     InvalidSortException,
     OrginizationNotFoundException,
     TokenNotFoundException
 )
+
+from github import Github
 
 use_cache = False
 try:
@@ -15,8 +16,6 @@ try:
     use_cache = True
 except ImportError:
     pass
-
-from github import Github
 
 
 logger = logging.getLogger(__name__)
@@ -86,6 +85,7 @@ def get_contributor_count(repo):
 
     contributor_count = 0
     try:
+
         contributors = repo.get_stats_contributors()
     except Exception: # todo name
         return contributor_count
@@ -93,6 +93,12 @@ def get_contributor_count(repo):
     if contributors is not None:
         for contributor in contributors:
             contributor_count += 1
+
+
+
+
+
+
             # Hack - short circuit at 15. This endpoint is incredibly slow.
             # I don't have a good solution for this yet.
             if contributor_count >= 15:
